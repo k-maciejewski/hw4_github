@@ -1,0 +1,61 @@
+---
+title: "P8105_hw4_km3304"
+author: "Kaitlin Maciejewski"
+date: "10/26/2017"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(dplyr)
+library(readr)
+library(janitor)
+library(lubridate)
+```
+
+```{r}
+# clean pols-month data set
+
+pols_month = read_csv(file = "./fivethirtyeight_datasets/pols-month.csv") %>% 
+  clean_names() %>% 
+  # change day of month to first day
+  mutate(mon = lubridate::floor_date(mon, unit = "month")) %>% 
+  separate(mon, into= c("year", "month", "day"), 
+           sep = "-", convert = TRUE) %>% 
+  arrange(year, month) %>%
+  mutate(month = month.name[month]) %>% 
+  #recode president data
+  mutate (prez_dem = recode(prez_dem, '1' = "dem", '0' = "gop")) %>% 
+  mutate (prez_gop = recode(prez_gop, '0' = "dem", '1' = "gop", '2' = "gop")) 
+
+# select and arrange information
+pols_month <- select(pols_month, -prez_gop, -prez_dem, -day) %>% 
+  select(year, month, everything()) 
+
+
+#clean GDP data set, arrange by year, month, and change month from numeric to names
+
+GDP = read_csv(file = "./fivethirtyeight_datasets/GDP.csv") %>% 
+  clean_names() %>% 
+  separate(date, into= c("year", "month", "day"), 
+           sep = "-", convert = TRUE) %>% 
+  arrange(year, month) %>%
+  mutate(month = month.name[month])
+
+is.na(GDP) <- GDP == "." # change "." to NA
+
+# merge datasets
+
+data_538 = left_join(pols_month, GDP) 
+  
+```
+
+
+The collaborator will create a plot showing the GDP value over time, including the party of the president in an informative aesthetic.
+
+The R Markdown document in your GitHub repository should produce a file including code and text that explains the analyses and results for this problem.
+
