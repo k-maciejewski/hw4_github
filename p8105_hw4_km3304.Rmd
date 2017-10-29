@@ -32,6 +32,8 @@ pols_month = read_csv(file = "./fivethirtyeight_datasets/pols-month.csv") %>%
   mutate (prez_dem = recode(prez_dem, '1' = "dem", '0' = "gop")) %>% 
   mutate (prez_gop = recode(prez_gop, '0' = "dem", '1' = "gop", '2' = "gop")) 
 
+if (pols_month$prez_gop == pols_month$prez_dem){pols_month$president = pols_month$prez_gop} 
+
 # select and arrange information
 pols_month <- select(pols_month, -prez_gop, -prez_dem, -day) %>% 
   select(year, month, everything()) 

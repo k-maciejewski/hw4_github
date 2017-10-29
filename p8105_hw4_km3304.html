@@ -149,6 +149,9 @@ pols_month = read_csv(file = &quot;./fivethirtyeight_datasets/pols-month.csv&quo
 ##   sen_dem = col_integer(),
 ##   rep_dem = col_integer()
 ## )</code></pre>
+<pre class="r"><code>if (pols_month$prez_gop == pols_month$prez_dem){pols_month$president = pols_month$prez_gop} </code></pre>
+<pre><code>## Warning in if (pols_month$prez_gop == pols_month$prez_dem) {: the condition
+## has length &gt; 1 and only the first element will be used</code></pre>
 <pre class="r"><code># select and arrange information
 pols_month &lt;- select(pols_month, -prez_gop, -prez_dem, -day) %&gt;% 
   select(year, month, everything()) 
