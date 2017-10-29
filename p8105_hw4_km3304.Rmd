@@ -56,9 +56,24 @@ data_538 = left_join(pols_month, GDP)
   
 ```
 
+```{r}
+mean_gdp = data_538 %>%
+  filter(!is.na(value)) %>%
+  group_by(year) %>%
+  mutate(value = as.numeric(value)) %>%
+  summarise(mean_value = mean(value))
 
-The collaborator will create a plot showing the GDP value over time, including the party of the president in an informative aesthetic.
+plot_gdp_over_time = data_538 %>%
+  select(year, president) %>%
+  unique() %>%
+  left_join(mean_gdp, by = 'year') %>%
+  filter(!is.na(mean_value))
+    
+plot_gdp_over_time %>%
+  ggplot(aes(y = mean_value, x = year, fill = president)) + 
+  geom_col() +
+  ylab('Mean GDP')
+```
 
-The R Markdown document in your GitHub repository should produce a file including code and text that explains the analyses and results for this problem.
+Above, we present a bar graph showing the mean yearly GDP from 1948 to 2015. At a glance, GDP appears to be overall increasing until the late 70s, when GDP appears to become overall decreasing. This pattern appears to hold regardless of the party holding presidential office. 
 
-change made
